@@ -2,11 +2,6 @@
 
 ## Run the following command to start the API Gateway:
 
-### Run Cargo watch:
-```bash
-cargo watch -x run
-```
-
 ### Build the project:
 
 ```bash
