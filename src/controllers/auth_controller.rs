@@ -1,4 +1,5 @@
-use actix_web::{HttpResponse, Responder, web};
+use actix_web::{Responder, web};
+
 use crate::services::auth_service::AuthService;
 
 #[derive(serde::Deserialize)]
@@ -18,9 +19,5 @@ pub async fn login(service: web::Data<AuthService>, data: web::Json<LoginData>) 
     let user = &data.user;
     let password = &data.password;
 
-    if service.validate_login(user, password).await {
-        HttpResponse::Ok().body("Inicio de sesión exitoso.")
-    } else {
-        HttpResponse::Unauthorized().body("Credenciales incorrectas.")
-    }
+    service.validate_login(user, password).await.unwrap_or_else(|error_response| error_response)
 }
