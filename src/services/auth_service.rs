@@ -19,13 +19,14 @@ impl AuthService {
         AuthService { axios }
     }
 
-    pub async fn validate_login(&self, user: &str, password: &str) -> Result<HttpResponse, HttpResponse> {
+    pub async fn validate_login(
+        &self,
+        user: &str,
+        password: &str,
+    ) -> Result<HttpResponse, HttpResponse> {
         let url = format!("{}/auth", self.axios.base_url);
 
-        let login_data = LoginData {
-            user,
-            password,
-        };
+        let login_data = LoginData { user, password };
 
         self.axios.post(&url, &login_data).await
     }

@@ -1,8 +1,11 @@
-use std::sync::Arc;
-use actix_web::{http::header::{HeaderName, HeaderValue}, HttpResponse};
+use actix_web::{
+    http::header::{HeaderName, HeaderValue},
+    HttpResponse,
+};
 use log::info;
 use reqwest::Client;
 use serde::Serialize;
+use std::sync::Arc;
 
 pub struct Axios {
     client: Arc<Client>,
@@ -14,24 +17,29 @@ impl Axios {
         Axios { client, base_url }
     }
 
-    pub(crate) async fn post<T: Serialize>(&self, url: &str, data: &T) -> Result<HttpResponse, HttpResponse> {
-        let response = match self.client.post(url)
-            .json(data)
-            .send()
-            .await {
+    pub(crate) async fn post<T: Serialize>(
+        &self,
+        url: &str,
+        data: &T,
+    ) -> Result<HttpResponse, HttpResponse> {
+        let response = match self.client.post(url).json(data).send().await {
             Ok(resp) => resp,
             Err(err) => {
                 info!("ERROR: {:?}", err);
                 if let Some(status) = err.status() {
                     let body = err.to_string();
-                    return Err(HttpResponse::build(actix_web::http::StatusCode::from_u16(status.as_u16()).unwrap()).body(body));
+                    return Err(HttpResponse::build(
+                        actix_web::http::StatusCode::from_u16(status.as_u16()).unwrap(),
+                    )
+                    .body(body));
                 }
                 return Err(HttpResponse::InternalServerError().finish());
             }
         };
 
         let status = response.status();
-        let mut actix_response = HttpResponse::build(actix_web::http::StatusCode::from_u16(status.as_u16()).unwrap());
+        let mut actix_response =
+            HttpResponse::build(actix_web::http::StatusCode::from_u16(status.as_u16()).unwrap());
 
         for (key, value) in response.headers().iter() {
             let header_name = HeaderName::from_bytes(key.as_str().as_bytes()).unwrap();
@@ -46,5 +54,4 @@ impl Axios {
 
         Ok(actix_response.body(body))
     }
-
 }

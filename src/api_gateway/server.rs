@@ -9,7 +9,6 @@ use crate::api_gateway::modules::setup_auth_service;
 use crate::api_gateway::router::configure_routes;
 
 pub async fn run_server() -> std::io::Result<()> {
-
     dotenv().ok();
 
     let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
@@ -23,7 +22,7 @@ pub async fn run_server() -> std::io::Result<()> {
             .app_data(setup_auth_service(client.clone()).clone())
             .configure(configure_routes)
     })
-        .bind(server_address)?
-        .run()
-        .await
+    .bind(server_address)?
+    .run()
+    .await
 }

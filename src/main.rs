@@ -1,7 +1,7 @@
-mod controllers;
-mod services;
 mod api_gateway;
 mod common;
+mod controllers;
+mod services;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

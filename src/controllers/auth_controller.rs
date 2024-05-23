@@ -1,4 +1,4 @@
-use actix_web::{Responder, web};
+use actix_web::{web, Responder};
 
 use crate::services::auth_service::AuthService;
 
@@ -19,5 +19,8 @@ pub async fn login(service: web::Data<AuthService>, data: web::Json<LoginData>) 
     let user = &data.user;
     let password = &data.password;
 
-    service.validate_login(user, password).await.unwrap_or_else(|error_response| error_response)
+    service
+        .validate_login(user, password)
+        .await
+        .unwrap_or_else(|error_response| error_response)
 }
